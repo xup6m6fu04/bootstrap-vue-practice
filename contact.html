@@ -1,13 +1,119 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <title></title>
+    <style>
+        .bg-1da7fc {
+            background-color: #1da7fc;
+        }
+
+        .container-fluid {
+            padding: 0px;
+        }
+    </style>
 </head>
 <body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <nav class="navbar navbar-dark bg-1da7fc">
+                <img src="Pi_Logo.svg" width="50" height="50" class="mx-auto d-block" alt="">
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="row">
+        <div class="col-sm">
+            <h2>聯絡我們</h2>
+            <p class="text-left">為加速您的變更程序，請務必填寫完整內容與提供所需文件</p>
+        </div>
+    </div>
+</div>
+
+<div class="dropdown-divider"></div>
+
+<div id="basic" class="container pt-3 pb-3">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">姓名</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="姓名">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">手機</label>
+        <div class="col-sm-10">
+            <input type="phone" class="form-control" placeholder="手機">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">電子信箱</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" placeholder="電子信箱">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm">
+            <p class="text-left">＊我們將寄送回覆信函至您提供的電子信箱</p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label text-center">發生問題的裝置</label>
+        <div class="col-sm-2">
+            <select class="form-control">
+                <option v-for="phone_brand in phone_brands">{{ phone_brand }}</option>
+            </select>
+        </div>
+        <label class="col-sm-2 col-form-label text-center">手機作業系統</label>
+        <div class="col-sm-2">
+            <select class="form-control">
+                <option>Choose...</option>
+            </select>
+        </div>
+        <label class="col-sm-2 col-form-label text-center">Pi 拍錢包 版本</label>
+        <div class="col-sm-2">
+            <select class="form-control">
+                <option>Choose...</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="dropdown-divider"></div>
 
 </body>
+<!-- Vue.js -->
 <script src="https://vuejs.org/js/vue.js"></script>
-<script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-<script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+<script>
+    new Vue({
+        el: '#basic',
+        data : {
+            phone_brands : [
+                'iPhone',
+                'Sony',
+                'Sumsung',
+                'Nokia',
+                'ASUS',
+                'OPPO',
+                '小米',
+                'htc',
+                '華為',
+                '其他'
+            ],
+        },
+    });
+</script>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
 </html>
