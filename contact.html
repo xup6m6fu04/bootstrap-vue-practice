@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -69,19 +69,36 @@
         <label class="col-sm-2 col-form-label text-center">發生問題的裝置</label>
         <div class="col-sm-2">
             <select class="form-control">
-                <option v-for="phone_brand in phone_brands">{{ phone_brand }}</option>
+                <option v-for="phone_brand in phone_brands" :value="phone_brand">{{ phone_brand }}</option>
             </select>
         </div>
         <label class="col-sm-2 col-form-label text-center">手機作業系統</label>
         <div class="col-sm-2">
-            <select class="form-control">
-                <option>Choose...</option>
+            <input type="text" class="form-control" placeholder="手機作業系統">
+        </div>
+        <label class="col-sm-2 col-form-label text-center">Pi APP 版本</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" placeholder="Pi APP 版本">
+        </div>
+    </div>
+</div>
+
+<div id="question" class="container">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">問題類型</label>
+        <div class="col-sm-10">
+            <select class="form-control" v-model="main_question_value">
+                <option value="">請選擇</option>
+                <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text }}</option>
             </select>
         </div>
-        <label class="col-sm-2 col-form-label text-center">Pi 拍錢包 版本</label>
-        <div class="col-sm-2">
+    </div>
+    <div class="form-group row" v-if="sub_question_view">
+        <label class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
             <select class="form-control">
-                <option>Choose...</option>
+                <option value="">請選擇</option>
+                <option v-for="sub_question in sub_questions">{{ sub_question.text }}</option>
             </select>
         </div>
     </div>
@@ -95,8 +112,8 @@
 <script>
     new Vue({
         el: '#basic',
-        data : {
-            phone_brands : [
+        data: {
+            phone_brands: [
                 'iPhone',
                 'Sony',
                 'Sumsung',
@@ -108,6 +125,45 @@
                 '華為',
                 '其他'
             ],
+        },
+    });
+
+    new Vue({
+        el: '#question',
+        data : {
+            main_questions: [
+                { text : 'APP 操作問題', value : 'AP' },
+                { text : '變更帳戶資料', value : 'CH' },
+                { text : '繳費問題', value : 'BI' },
+                { text : '交易問題', value : 'TR' },
+                { text : 'P幣', value : 'PC' },
+                { text : '玉山 Pi 拍錢包信用卡', value : 'PI' },
+                { text : '帳務問題', value : 'AC' },
+                { text : '網站操作問題', value : 'WE' },
+                { text : '商業會員', value : 'ME' },
+                { text : '商家合作提案', value : 'ST' },
+                { text : '行銷活動諮詢', value : 'MA' },
+                { text : '給 Pi 拍錢包的建議', value : 'SU' },
+            ],
+            main_question_value : '',
+        },
+        computed : {
+            sub_question_view() {
+                return !!(this.main_question_value);
+            },
+            sub_questions() {
+                if (this.main_question_value === 'AP') {
+                    return [
+                        { text : '註冊問題', value : '11' },
+                        { text : '無法登入/忘記密碼', value : '12' },
+                        { text : '電子發票載具/手機條碼', value : '13' },
+                        { text : '系統異常', value : '14' },
+                        { text : '註銷帳號', value : '15' },
+                        { text : '申請掛失、手機遺失', value : '16' },
+                        { text : '其他', value : '17' },
+                    ]
+                }
+            }
         },
     });
 </script>
