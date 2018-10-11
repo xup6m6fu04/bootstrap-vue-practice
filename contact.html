@@ -88,7 +88,7 @@
         <label class="col-sm-2 col-form-label">問題類型</label>
         <div class="col-sm-10">
             <select class="form-control" v-model="main_question_value">
-                <option value="">請選擇</option>
+                <option value="" disabled>請選擇</option>
                 <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text }}</option>
             </select>
         </div>
@@ -96,9 +96,9 @@
     <div class="form-group row" v-if="sub_question_view">
         <label class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
-            <select class="form-control">
-                <option value="">請選擇</option>
-                <option v-for="sub_question in sub_questions">{{ sub_question.text }}</option>
+            <select class="form-control" v-model="sub_selected">
+                <option value="" disabled>請選擇</option>
+                <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}</option>
             </select>
         </div>
     </div>
@@ -108,7 +108,8 @@
 
 </body>
 <!-- Vue.js -->
-<script src="https://vuejs.org/js/vue.js"></script>
+<!--<script src="https://vuejs.org/js/vue.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
 <script>
     new Vue({
         el: '#basic',
@@ -131,6 +132,8 @@
     new Vue({
         el: '#question',
         data : {
+            sub_selected : '',
+            main_question_value : '',
             main_questions: [
                 { text : 'APP 操作問題', value : 'AP' },
                 { text : '變更帳戶資料', value : 'CH' },
@@ -145,23 +148,118 @@
                 { text : '行銷活動諮詢', value : 'MA' },
                 { text : '給 Pi 拍錢包的建議', value : 'SU' },
             ],
-            main_question_value : '',
+
         },
         computed : {
             sub_question_view() {
                 return !!(this.main_question_value);
             },
             sub_questions() {
-                if (this.main_question_value === 'AP') {
-                    return [
-                        { text : '註冊問題', value : '11' },
-                        { text : '無法登入/忘記密碼', value : '12' },
-                        { text : '電子發票載具/手機條碼', value : '13' },
-                        { text : '系統異常', value : '14' },
-                        { text : '註銷帳號', value : '15' },
-                        { text : '申請掛失、手機遺失', value : '16' },
-                        { text : '其他', value : '17' },
-                    ]
+
+                // 主 select 切換時 副 select 回到初始值
+                this.sub_selected = '';
+
+                switch (this.main_question_value) {
+                    case 'AP' :
+                        // APP 操作問題 子選項
+                        return [
+                            { text : '註冊問題', value : '11' },
+                            { text : '無法登入/忘記密碼', value : '12' },
+                            { text : '電子發票載具/手機條碼', value : '13' },
+                            { text : '系統異常', value : '14' },
+                            { text : '註銷帳號', value : '15' },
+                            { text : '申請掛失、手機遺失', value : '16' },
+                            { text : '其他', value : '17' },
+                        ];
+                        break;
+                    case 'CH' :
+                        // 變更帳戶資料 子選項
+                        return [
+                            { text : '變更手機號碼', value : '21' },
+                            { text : '變更身分證字號', value : '22' },
+                        ];
+                        break;
+                    case 'BI' :
+                        // 繳費問題 子選項
+                        return [
+                            { text : '停車費問題', value : '31' },
+                            { text : '水電繳費問題', value : '32' },
+                            { text : '信用卡、電信費問題', value : '33' },
+                            { text : '約定通知問題', value : '34' },
+                            { text : '其他', value : '35' },
+                        ];
+                        break;
+                    case 'TR' :
+                        // 交易問題 子選項
+                        return [
+                            { text : '超商/超市/實體商店付款問題', value : '41' },
+                            { text : '線上購物交易問題', value : '42' },
+                            { text : '交易失敗', value : '43' },
+                            { text : '操作問題', value : '44' },
+                            { text : '偽冒交易', value : '45' },
+                            { text : '其他', value : '46' },
+                        ];
+                        break;
+                    case 'PC' :
+                        // P幣 子選項
+                        return [
+                            { text : '點數未加給', value : '51' },
+                            { text : '點數更新異常', value : '52' },
+                            { text : '使用/折抵問題', value : '53' },
+                            { text : '其他', value : '54' },
+                        ];
+                        break;
+                    case 'PI' :
+                        // 玉山 Pi 拍錢包信用卡 子選項
+                        return [
+                            { text : '綁定卡片問題', value : '61' },
+                            { text : '累積點數問題', value : '62' },
+                            { text : '其他', value : '63' },
+                        ];
+                        break;
+                    case 'AC' :
+                        // 帳務問題 子選項
+                        return [
+                            { text : '提領', value : '71' },
+                            { text : '手續費', value : '72' },
+                            { text : '其他', value : '73' },
+                        ];
+                        break;
+                    case 'WE' :
+                        // 網站操作問題 子選項
+                        return [
+                            { text : '操作問題', value : '81' },
+                            { text : '其他', value : '82' },
+                        ];
+                        break;
+                    case 'ME' :
+                        // 商業會員 子選項
+                        return [
+                            { text : '會員問題諮詢', value : '91' },
+                            { text : '其他', value : '92' },
+                        ];
+                        break;
+                    case 'ST' :
+                        // 商家合作提案 子選項
+                        return [
+                            { text : '合作提案', value : '01' },
+                            { text : '其他', value : '02' },
+                        ];
+                        break;
+                    case 'MA' :
+                        // 行銷活動諮詢 子選項
+                        return [
+                            { text : '行銷活動諮詢', value : '11' },
+                            { text : '其他', value : '12' },
+                        ];
+                        break;
+                    case 'SU' :
+                        // 給 Pi 拍錢包的建議 子選項
+                        return [
+                            { text : '建議', value : '21' },
+                            { text : '其他', value : '22' },
+                        ];
+                        break;
                 }
             }
         },
