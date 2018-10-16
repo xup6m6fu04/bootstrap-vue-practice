@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
           integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-datetime@1.0.0-beta.8/dist/vue-datetime.min.css">
     <title></title>
     <style>
         .bg-1da7fc {
@@ -43,21 +44,21 @@
 
 <div id="basic" class="container pt-3 pb-3">
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">姓名</label>
+        <label for="name" class="col-sm-2 col-form-label">姓名</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="姓名">
+            <input id="name" type="text" class="form-control" placeholder="姓名">
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">手機</label>
+        <label for="phone" class="col-sm-2 col-form-label">手機</label>
         <div class="col-sm-10">
-            <input type="phone" class="form-control" placeholder="手機">
+            <input id="phone" type="phone" class="form-control" placeholder="手機">
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">電子信箱</label>
+        <label for="email" class="col-sm-2 col-form-label">電子信箱</label>
         <div class="col-sm-10">
-            <input type="email" class="form-control" placeholder="電子信箱">
+            <input id="email" type="email" class="form-control" placeholder="電子信箱">
         </div>
     </div>
     <div class="form-group row">
@@ -66,37 +67,37 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label text-center">發生問題的裝置</label>
+        <label for="phone_brands" class="col-sm-2 col-form-label text-center">發生問題的裝置</label>
         <div class="col-sm-2">
-            <select class="form-control">
+            <select id="phone_brands" class="form-control">
                 <option v-for="phone_brand in phone_brands" :value="phone_brand">{{ phone_brand }}</option>
             </select>
         </div>
-        <label class="col-sm-2 col-form-label text-center">手機作業系統</label>
+        <label for="phone_os" class="col-sm-2 col-form-label text-center">手機作業系統</label>
         <div class="col-sm-2">
-            <input type="text" class="form-control" placeholder="手機作業系統">
+            <input id="phone_os" type="text" class="form-control" placeholder="手機作業系統">
         </div>
-        <label class="col-sm-2 col-form-label text-center">Pi APP 版本</label>
+        <label for="pi_version" class="col-sm-2 col-form-label text-center">Pi APP 版本</label>
         <div class="col-sm-2">
-            <input type="text" class="form-control" placeholder="Pi APP 版本">
+            <input id="pi_version" type="text" class="form-control" placeholder="Pi APP 版本">
         </div>
     </div>
 </div>
 
 <div id="question" class="container">
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">問題類型</label>
+        <label for="main_questions" class="col-sm-2 col-form-label">問題類型</label>
         <div class="col-sm-10">
-            <select class="form-control" v-model="main_question_value">
+            <select id="main_questions" class="form-control" v-model="main_question_value">
                 <option value="" disabled>請選擇</option>
                 <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text }}</option>
             </select>
         </div>
     </div>
     <div class="form-group row" v-if="sub_question_view">
-        <label class="col-sm-2 col-form-label"></label>
+        <label for="sub_questions" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
-            <select class="form-control" v-model="sub_selected">
+            <select id="sub_questions" class="form-control" v-model="sub_selected">
                 <option value="" disabled>請選擇</option>
                 <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}</option>
             </select>
@@ -106,11 +107,31 @@
 
 <div class="dropdown-divider"></div>
 
+<div id="question_content" class="container pt-2">
+    <button v-on:click="show" type="button">console.log</button>
+    <div class="form-group row">
+        <label for="question_time" class="col-sm-2 col-form-label">發生時間</label>
+        <div class="col-sm-6">
+            <datetime type="datetime" input-id="question_time" input-class="form-control" :format="datetime_format"></datetime>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="question_detail" class=" col-sm-2 col-form-label">問題描述</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" id="question_detail" rows="3"></textarea>
+        </div>
+    </div>
+</div>
+
+
 </body>
 <!-- Vue.js -->
 <!--<script src="https://vuejs.org/js/vue.js"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
+<script src="https://moment.github.io/luxon/global/luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-datetime@1.0.0-beta.8/dist/vue-datetime.min.js"></script>
 <script>
+
     new Vue({
         el: '#basic',
         data: {
@@ -264,10 +285,30 @@
             }
         },
     });
+
+
+    new Vue({
+        el: '#question_content',
+        data: {
+            datetime_format: {
+                year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit", hour12: false
+            }
+        },
+        methods: {
+            show: function (event) {
+                console.log(document.getElementById('question_time').value)
+            }
+        }
+
+
+    });
+
+
 </script>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
 
 </html>
