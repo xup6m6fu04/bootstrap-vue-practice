@@ -60,14 +60,12 @@
         <div class="col-sm-10">
             <input id="email" type="email" class="form-control" placeholder="電子信箱">
         </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-sm">
-            <p class="text-left">＊我們將寄送回覆信函至您提供的電子信箱</p>
+        <div class="col-sm pt-2">
+            <p class="text-left">※ 我們將寄送回覆信函至您提供的電子信箱</p>
         </div>
     </div>
     <div class="form-group row">
-        <label for="phone_brands" class="col-sm-2 col-form-label text-center">發生問題的裝置</label>
+        <label for="phone_brands" class="col-sm-2 col-form-label ">發生問題的裝置</label>
         <div class="col-sm-2">
             <select id="phone_brands" class="form-control">
                 <option v-for="phone_brand in phone_brands" :value="phone_brand">{{ phone_brand }}</option>
@@ -90,35 +88,92 @@
         <div class="col-sm-10">
             <select id="main_questions" class="form-control" v-model="main_question_value">
                 <option value="" disabled>請選擇</option>
-                <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text }}</option>
+                <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text }}
+                </option>
             </select>
         </div>
     </div>
     <div class="form-group row" v-if="sub_question_view">
         <label for="sub_questions" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
-            <select id="sub_questions" class="form-control" v-model="sub_selected">
+            <select id="sub_questions" class="form-control" v-model="sub_selected" @change="subQuestionChange">
                 <option value="" disabled>請選擇</option>
-                <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}</option>
+                <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}
+                </option>
             </select>
         </div>
     </div>
-</div>
-
-<div class="dropdown-divider"></div>
-
-<div id="question_content" class="container pt-2">
-    <button v-on:click="show" type="button">console.log</button>
-    <div class="form-group row">
+    <!--<button v-on:click="show" type="button">console.log</button>-->
+    <div class="form-group row" v-if="question_time">
         <label for="question_time" class="col-sm-2 col-form-label">發生時間</label>
-        <div class="col-sm-6">
-            <datetime type="datetime" input-id="question_time" input-class="form-control" :format="datetime_format"></datetime>
+        <div class="col-sm-10">
+            <datetime type="datetime" input-id="question_time" input-class="form-control"
+                      :format="datetime_format"></datetime>
+        </div>
+        <div class="col-sm-12 pt-2">
+            <p class="text-left">※ 請盡量填寫詳細時間，以便我們能更快確認您的問題。</p>
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" v-if="question_phone">
+        <label for="old_phone" class=" col-sm-2 col-form-label">原手機號碼</label>
+        <div class="col-sm-4">
+            <input id="old_phone" type="text" class="form-control" placeholder="原手機號碼">
+        </div>
+        <label for="new_phone" class=" col-sm-2 col-form-label">新手機號碼</label>
+        <div class="col-sm-4">
+            <input id="new_phone" type="text" class="form-control" placeholder="新手機號碼">
+        </div>
+    </div>
+    <div class="form-group row" v-if="question_car_num">
+        <label for="car_num" class="col-sm-2 col-form-label ">車號</label>
+        <div class="col-sm-2">
+            <input id="car_num" type="text" class="form-control" placeholder="車號">
+        </div>
+        <label for="parking_city" class="col-sm-2 col-form-label text-center">開單縣市</label>
+        <div class="col-sm-2">
+            <select id="parking_city" class="form-control">
+                <option v-for="parking_city in parking_cities" :value="parking_city">{{ parking_city }}</option>
+            </select>
+        </div>
+        <label for="parking_num" class="col-sm-2 col-form-label text-center">停車單號</label>
+        <div class="col-sm-2">
+            <input id="parking_num" type="text" class="form-control" placeholder="停車單單號">
+        </div>
+    </div>
+    <div class="form-group row" v-if="question_receiver">
+        <label for="receiver" class="col-sm-2 col-form-label">繳費對象</label>
+        <div class="col-sm-10">
+            <input id="receiver" type="text" class="form-control" placeholder="繳費對象">
+        </div>
+    </div>
+    <div class="form-group row" v-if="question_point">
+        <div class="col-sm">
+            <p class="text-left">※ 刷卡交易獲得之P幣，依廠商請款時間不同，將於請款後2-3天工作天入帳。請先確認交易是否已完成請款。</p>
+        </div>
+    </div>
+    <div class="form-group row" v-if="question_desc">
+        <div class="col-sm-12">
+            <p class="text-left">{{ reminder_text }}</p>
+        </div>
         <label for="question_detail" class=" col-sm-2 col-form-label">問題描述</label>
         <div class="col-sm-10">
             <textarea class="form-control" id="question_detail" rows="3"></textarea>
+        </div>
+    </div>
+    <div class="form-group row" v-if="question_upload">
+        <label for="upload_file" class=" col-sm-12 col-form-label" >{{ upload_text }}</label>
+        <div class="col-sm-12 pt-3">
+            <input type="file" @change="fileSelected" class="form-control-file" id="upload_file" multiple>
+        </div>
+        <div class="col-sm-12 pt-3"></div>
+        <div class="col-sm-4">
+            <img :src="image1" class="img-fluid"/>
+        </div>
+        <div class="col-sm-4">
+            <img :src="image2" class="img-fluid"/>
+        </div>
+        <div class="col-sm-4">
+            <img :src="image3" class="img-fluid"/>
         </div>
     </div>
 </div>
@@ -152,26 +207,178 @@
 
     new Vue({
         el: '#question',
-        data : {
-            sub_selected : '',
-            main_question_value : '',
+        data: {
+            sub_selected: '',
+            main_question_value: '',
             main_questions: [
-                { text : 'APP 操作問題', value : 'AP' },
-                { text : '變更帳戶資料', value : 'CH' },
-                { text : '繳費問題', value : 'BI' },
-                { text : '交易問題', value : 'TR' },
-                { text : 'P幣', value : 'PC' },
-                { text : '玉山 Pi 拍錢包信用卡', value : 'PI' },
-                { text : '帳務問題', value : 'AC' },
-                { text : '網站操作問題', value : 'WE' },
-                { text : '商業會員', value : 'ME' },
-                { text : '商家合作提案', value : 'ST' },
-                { text : '行銷活動諮詢', value : 'MA' },
-                { text : '給 Pi 拍錢包的建議', value : 'SU' },
+                {text: 'APP 操作問題', value: 'AP'},
+                {text: '變更帳戶資料', value: 'CH'},
+                {text: '繳費問題', value: 'BI'},
+                {text: '交易問題', value: 'TR'},
+                {text: 'P幣', value: 'PC'},
+                {text: '玉山 Pi 拍錢包信用卡', value: 'PI'},
+                {text: '帳務問題', value: 'AC'},
+                {text: '網站操作問題', value: 'WE'},
+                {text: '商業會員', value: 'ME'},
+                {text: '商家合作提案', value: 'ST'},
+                {text: '行銷活動諮詢', value: 'MA'},
+                {text: '給 Pi 拍錢包的建議', value: 'SU'},
             ],
+            upload_text : '請附上截圖照片 ( 最多 3 張，大小限制 2 MB )',
+            reminder_text : '',
+            datetime_format: {
+                year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit", hour12: false
+            },
+            image1: '',
+            image2: '',
+            image3: '',
+            parking_cities: [
+                '基隆市',
+                '臺北市',
+                '新北市',
+                '桃園市',
+                '新竹市',
+                '新竹縣',
+                '苗栗市',
+                '台中市',
+                '臺南市',
+                '高雄市',
+                '花蓮縣',
+            ],
+            question_time: false,
+            question_phone: false,
+            question_car_num: false,
+            question_receiver: false,
+            question_point: false,
+            question_desc: false,
+            question_upload: false,
 
         },
-        computed : {
+        methods: {
+            show() {
+                console.log(document.getElementById('question_time').value)
+            },
+            subQuestionChange() {
+                let question_number = this.main_question_value + this.sub_selected;
+
+                let question_time_list = [
+                    'AP17', 'BI31', 'BI32', 'BI33',
+                    'TR41', 'TR42', 'TR43', 'TR44', 'TR45', 'TR46'
+                ];
+                let question_phone_list = [
+                    'CH21'
+                ];
+                let question_car_num_list = [
+                    'BI31'
+                ];
+                let question_receiver_list = [
+                    'BI32', 'BI33',
+                    'TR41', 'TR42', 'TR43', 'TR44', 'TR45', 'TR46'
+                ];
+                let question_desc_list = [
+                    'AP11', 'AP12', 'AP13', 'AP14', 'AP15', 'AP16', 'AP17',
+                    'BI31', 'BI32', 'BI33', 'BI34', 'BI35',
+                    'TR41', 'TR42', 'TR43', 'TR44', 'TR45', 'TR46',
+                    'PC51', 'PC52', 'PC53', 'PC54',
+                    'PI61', 'PI62', 'PI63',
+                    'AC71', 'AC72', 'AC73',
+                    'WE81', 'WE82',
+                    'ME91', 'ME92',
+                    'ST01', 'ST02',
+                    'MA11', 'MA12',
+                    'SU21', 'SU22',
+                ];
+
+                let question_upload_list = [
+                    'CH21', 'CH22',
+                    'BI31', 'BI32', 'BI33', 'BI34', 'BI35',
+                    'TR41', 'TR42', 'TR43', 'TR44', 'TR45', 'TR46',
+                    'PC51', 'PC52', 'PC53', 'PC54',
+                    'PI61', 'PI62', 'PI63',
+                    'WE81', 'WE82',
+                    'ME91', 'ME92',
+                ];
+
+                if (question_time_list.indexOf(question_number) !== -1) {
+                    this.question_time = true;
+                } else {
+                    this.question_time = false;
+                }
+
+                if (question_phone_list.indexOf(question_number) !== -1) {
+                    this.question_phone = true;
+                } else {
+                    this.question_phone = false;
+                }
+
+                if (question_car_num_list.indexOf(question_number) !== -1) {
+                    this.question_car_num = true;
+                } else {
+                    this.question_car_num = false;
+                }
+
+                if (question_receiver_list.indexOf(question_number) !== -1) {
+                    this.question_receiver = true;
+                } else {
+                    this.question_receiver = false;
+                }
+
+                if (question_desc_list.indexOf(question_number) !== -1) {
+
+                    if(question_number === 'PC51') {
+                        this.reminder_text = '※刷卡交易獲得之P幣，依廠商請款時間不同，將於請款後2-3天工作天入帳。請先確認交易是否已完成請款。';
+                    } else {
+                        this.reminder_text = '';
+                    }
+
+                    this.question_desc = true;
+                } else {
+                    this.question_desc = false;
+                }
+
+                if (question_upload_list.indexOf(question_number) !== -1) {
+
+                    if(question_number === 'CH21') {
+                        this.upload_text = '請上傳身分證正面照片';
+                    } else if(question_number === 'CH22') {
+                        this.upload_text = '請上傳身分證正面照片、帳戶手機號碼電信費帳單照片 ( ※ 請提供註冊的手機號碼電信帳單，以作為門號持有人之依據。 )';
+                    }
+
+                    this.question_upload = true;
+
+                } else {
+
+                    this.upload_text = '請附上截圖照片 ( 最多 3 張，大小限制 2 MB )';
+                    this.question_upload = false;
+                }
+            },
+            fileSelected(event) {
+                let images = this;
+                const files = event.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    let file = files[i];
+                    const reader = new FileReader();
+                    reader.addEventListener('load', function (event) {
+                        console.log(event.target.result);
+                        switch (i) {
+                            case 0:
+                                images.image1 = event.target.result;
+                                break;
+                            case 1:
+                                images.image2 = event.target.result;
+                                break;
+                            case 2:
+                                images.image3 = event.target.result;
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                    reader.readAsDataURL(file);
+                }
+            },
+        },
+        computed: {
             sub_question_view() {
                 return !!(this.main_question_value);
             },
@@ -184,125 +391,96 @@
                     case 'AP' :
                         // APP 操作問題 子選項
                         return [
-                            { text : '註冊問題', value : '11' },
-                            { text : '無法登入/忘記密碼', value : '12' },
-                            { text : '電子發票載具/手機條碼', value : '13' },
-                            { text : '系統異常', value : '14' },
-                            { text : '註銷帳號', value : '15' },
-                            { text : '申請掛失、手機遺失', value : '16' },
-                            { text : '其他', value : '17' },
+                            {text: '註冊問題', value: '11'},
+                            {text: '無法登入/忘記密碼', value: '12'},
+                            {text: '電子發票載具/手機條碼', value: '13'},
+                            {text: '系統異常', value: '14'},
+                            {text: '註銷帳號', value: '15'},
+                            {text: '申請掛失、手機遺失', value: '16'},
+                            {text: '其他', value: '17'},
                         ];
-                        break;
                     case 'CH' :
                         // 變更帳戶資料 子選項
                         return [
-                            { text : '變更手機號碼', value : '21' },
-                            { text : '變更身分證字號', value : '22' },
+                            {text: '變更手機號碼', value: '21'},
+                            {text: '變更身分證字號', value: '22'},
                         ];
-                        break;
                     case 'BI' :
                         // 繳費問題 子選項
                         return [
-                            { text : '停車費問題', value : '31' },
-                            { text : '水電繳費問題', value : '32' },
-                            { text : '信用卡、電信費問題', value : '33' },
-                            { text : '約定通知問題', value : '34' },
-                            { text : '其他', value : '35' },
+                            {text: '停車費問題', value: '31'},
+                            {text: '水電繳費問題', value: '32'},
+                            {text: '信用卡、電信費問題', value: '33'},
+                            {text: '約定通知問題', value: '34'},
+                            {text: '其他', value: '35'},
                         ];
-                        break;
                     case 'TR' :
                         // 交易問題 子選項
                         return [
-                            { text : '超商/超市/實體商店付款問題', value : '41' },
-                            { text : '線上購物交易問題', value : '42' },
-                            { text : '交易失敗', value : '43' },
-                            { text : '操作問題', value : '44' },
-                            { text : '偽冒交易', value : '45' },
-                            { text : '其他', value : '46' },
+                            {text: '超商/超市/實體商店付款問題', value: '41'},
+                            {text: '線上購物交易問題', value: '42'},
+                            {text: '交易失敗', value: '43'},
+                            {text: '操作問題', value: '44'},
+                            {text: '偽冒交易', value: '45'},
+                            {text: '其他', value: '46'},
                         ];
-                        break;
                     case 'PC' :
                         // P幣 子選項
                         return [
-                            { text : '點數未加給', value : '51' },
-                            { text : '點數更新異常', value : '52' },
-                            { text : '使用/折抵問題', value : '53' },
-                            { text : '其他', value : '54' },
+                            {text: '點數未加給', value: '51'},
+                            {text: '點數更新異常', value: '52'},
+                            {text: '使用/折抵問題', value: '53'},
+                            {text: '其他', value: '54'},
                         ];
-                        break;
                     case 'PI' :
                         // 玉山 Pi 拍錢包信用卡 子選項
                         return [
-                            { text : '綁定卡片問題', value : '61' },
-                            { text : '累積點數問題', value : '62' },
-                            { text : '其他', value : '63' },
+                            {text: '綁定卡片問題', value: '61'},
+                            {text: '累積點數問題', value: '62'},
+                            {text: '其他', value: '63'},
                         ];
-                        break;
                     case 'AC' :
                         // 帳務問題 子選項
                         return [
-                            { text : '提領', value : '71' },
-                            { text : '手續費', value : '72' },
-                            { text : '其他', value : '73' },
+                            {text: '提領', value: '71'},
+                            {text: '手續費', value: '72'},
+                            {text: '其他', value: '73'},
                         ];
-                        break;
                     case 'WE' :
                         // 網站操作問題 子選項
                         return [
-                            { text : '操作問題', value : '81' },
-                            { text : '其他', value : '82' },
+                            {text: '操作問題', value: '81'},
+                            {text: '其他', value: '82'},
                         ];
                         break;
                     case 'ME' :
                         // 商業會員 子選項
                         return [
-                            { text : '會員問題諮詢', value : '91' },
-                            { text : '其他', value : '92' },
+                            {text: '會員問題諮詢', value: '91'},
+                            {text: '其他', value: '92'},
                         ];
-                        break;
                     case 'ST' :
                         // 商家合作提案 子選項
                         return [
-                            { text : '合作提案', value : '01' },
-                            { text : '其他', value : '02' },
+                            {text: '合作提案', value: '01'},
+                            {text: '其他', value: '02'},
                         ];
-                        break;
                     case 'MA' :
                         // 行銷活動諮詢 子選項
                         return [
-                            { text : '行銷活動諮詢', value : '11' },
-                            { text : '其他', value : '12' },
+                            {text: '行銷活動諮詢', value: '11'},
+                            {text: '其他', value: '12'},
                         ];
-                        break;
                     case 'SU' :
                         // 給 Pi 拍錢包的建議 子選項
                         return [
-                            { text : '建議', value : '21' },
-                            { text : '其他', value : '22' },
+                            {text: '建議', value: '21'},
+                            {text: '其他', value: '22'},
                         ];
-                        break;
                 }
             }
         },
     });
-
-
-    new Vue({
-        el: '#question_content',
-        data: {
-            datetime_format: {
-                year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit", hour12: false
-            }
-        },
-        methods: {
-            show: function (event) {
-                console.log(document.getElementById('question_time').value)
-            }
-        }
-
-
-    });
-
 
 </script>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
