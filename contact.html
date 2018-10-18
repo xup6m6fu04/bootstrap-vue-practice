@@ -13,6 +13,7 @@
     <style>
         .bg-1da7fc {
             background-color: #1da7fc;
+            border-color: white;
         }
 
         .container-fluid {
@@ -41,143 +42,200 @@
 </div>
 
 <div class="dropdown-divider"></div>
+<form class="needs-validation" novalidate>
+    <div id="question" class="container pt-3">
 
-<div id="basic" class="container pt-3 pb-3">
-    <div class="form-group row">
-        <label for="name" class="col-sm-2 col-form-label">姓名</label>
-        <div class="col-sm-10">
-            <input id="name" type="text" class="form-control" placeholder="姓名">
+        <div class="form-group row">
+            <div class="col-md-4 mb-3">
+                <label for="name">姓名</label>
+                <input id="name" type="text" class="form-control" placeholder="姓名" v-model="name">
+                <div class="invalid-feedback" :style="v_name">
+                    請輸入姓名。
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="phone">手機</label>
+                <input id="phone" type="phone" class="form-control" placeholder="手機" v-model="phone">
+                <div class="invalid-feedback" :style="v_phone">
+                    請正確填寫手機號碼。
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="email">電子信箱</label>
+                <input id="email" type="email" class="form-control" placeholder="電子信箱" v-model="email">
+                <small class="form-text text-muted">
+                    ※ 我們將寄送回覆信函至您提供的電子信箱
+                </small>
+                <div class="invalid-feedback" :style="v_email">
+                    您輸入的 E-mail 有誤，請確認是否輸入正確。
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="phone" class="col-sm-2 col-form-label">手機</label>
-        <div class="col-sm-10">
-            <input id="phone" type="phone" class="form-control" placeholder="手機">
+        <div class="form-group row">
+            <div class="col-md-4 mb-3">
+                <label for="phone_brands">發生問題的裝置</label>
+                <select id="phone_brands" class="form-control" v-model="phone_brand">
+                    <option value="" disabled selected>請選擇</option>
+                    <option v-for="phone_brand in phone_brands" :value="phone_brand">{{ phone_brand }}</option>
+                </select>
+                <div class="invalid-feedback" :style="v_phone_brand">
+                    請選擇發生問題的裝置類型。
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="phone_os">手機作業系統</label>
+                <input id="phone_os" type="text" class="form-control" placeholder="手機作業系統" v-model="phone_os">
+                <div class="invalid-feedback" :style="v_phone_os">
+                    請輸入您的手機作業系統版本 ( 限填英數 )。
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="pi_version">Pi APP 版本</label>
+                <input id="pi_version" type="text" class="form-control" placeholder="Pi APP 版本" v-model="pi_version">
+                <div class="invalid-feedback" :style="v_pi_version">
+                    請輸入您的 Pi App 版本 ( 限填英數 )。
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="email" class="col-sm-2 col-form-label">電子信箱</label>
-        <div class="col-sm-10">
-            <input id="email" type="email" class="form-control" placeholder="電子信箱">
-        </div>
-        <div class="col-sm pt-2">
-            <p class="text-left">※ 我們將寄送回覆信函至您提供的電子信箱</p>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="phone_brands" class="col-sm-2 col-form-label ">發生問題的裝置</label>
-        <div class="col-sm-2">
-            <select id="phone_brands" class="form-control">
-                <option v-for="phone_brand in phone_brands" :value="phone_brand">{{ phone_brand }}</option>
-            </select>
-        </div>
-        <label for="phone_os" class="col-sm-2 col-form-label text-center">手機作業系統</label>
-        <div class="col-sm-2">
-            <input id="phone_os" type="text" class="form-control" placeholder="手機作業系統">
-        </div>
-        <label for="pi_version" class="col-sm-2 col-form-label text-center">Pi APP 版本</label>
-        <div class="col-sm-2">
-            <input id="pi_version" type="text" class="form-control" placeholder="Pi APP 版本">
-        </div>
-    </div>
-</div>
 
-<div id="question" class="container">
-    <div class="form-group row">
-        <label for="main_questions" class="col-sm-2 col-form-label">問題類型</label>
-        <div class="col-sm-10">
-            <select id="main_questions" class="form-control" v-model="main_question_value">
-                <option value="" disabled>請選擇</option>
-                <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text }}
-                </option>
-            </select>
+        <div class="form-group row">
+            <div class="col-md-4 mb-3">
+                <label for="main_questions">問題類型</label>
+                <select id="main_questions" class="form-control" v-model="main_question_value">
+                    <option value="" disabled>請選擇</option>
+                    <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text
+                        }}
+                    </option>
+                </select>
+                <div class="invalid-feedback" :style="v_main_question_value">
+                    請選擇問題類型。
+                </div>
+            </div>
+            <div class="col-md-8 mb-3" v-if="sub_question_view">
+                <label for="sub_questions">問題細節</label>
+                <select id="sub_questions" class="form-control" v-model="sub_selected" @change="subQuestionChange">
+                    <option value="" disabled>請選擇</option>
+                    <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}
+                    </option>
+                </select>
+                <small class="form-text text-muted">
+                    {{ reminder_text }}
+                </small>
+                <div class="invalid-feedback" :style="v_sub_selected">
+                    請選擇問題細節。
+                </div>
+            </div>
+        </div>
+        <!--<button v-on:click="show" type="button">console.log</button>-->
+        <div class="form-group row" v-if="question_time">
+            <div class="col-md-12 mb-3">
+                <label>發生時間</label>
+                <datetime type="datetime" input-id="question_time" input-class="form-control"
+                          :format="datetime_format"></datetime>
+                <small class="form-text text-muted">
+                    ※ 請盡量填寫詳細時間，以便我們能更快確認您的問題。
+                </small>
+                <div class="invalid-feedback" :style="v_question_time">
+                    請盡量填寫詳細時間，以便我們能更快確認您的問題。
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" v-if="question_phone">
+            <div class="col-md-6 mb-3">
+                <label for="old_phone">原手機號碼</label>
+                <input id="old_phone" type="text" class="form-control" placeholder="原手機號碼" v-model="old_phone">
+                <div class="invalid-feedback" :style="v_old_phone">
+                    請輸入原註冊在 Pi App 的手機號碼。
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="new_phone">新手機號碼</label>
+                <input id="new_phone" type="text" class="form-control" placeholder="新手機號碼" v-model="new_phone">
+                <div class="invalid-feedback" :style="v_new_phone">
+                    請輸入欲變更的手機號碼。
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" v-if="question_car_num">
+            <div class="col-md-4 mb-3">
+                <label for="car_num">車號</label>
+                <input id="car_num" type="text" class="form-control" placeholder="車號" v-model="car_num">
+                <div class="invalid-feedback" :style="v_car_num">
+                    請填寫正確車號。
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="parking_city">開單縣市</label>
+                <select id="parking_city" class="form-control" v-model="parking_city">
+                    <option value="" disabled selected>請選擇</option>
+                    <option v-for="parking_city in parking_cities" :value="parking_city">{{ parking_city }}</option>
+                </select>
+                <div class="invalid-feedback" :style="v_parking_city">
+                    請選擇停車單開立縣市。
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="parking_num">停車單號</label>
+                <input id="parking_num" type="text" class="form-control" placeholder="停車單單號" v-model="parking_num">
+                <div class="invalid-feedback" :style="v_parking_num">
+                    請填寫停車單單號。
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" v-if="question_receiver">
+            <div class="col-md-12 mb-3">
+                <label for="receiver">繳費對象</label>
+                <input id="receiver" type="text" class="form-control" placeholder="繳費對象" v-model="receiver">
+                <div class="invalid-feedback" :style="v_receiver">
+                    請填寫繳費對象。
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" v-if="question_desc">
+            <div class="col-md-12 mb-3">
+                <label for="question_detail">問題描述</label>
+                <textarea class="form-control" id="question_detail" rows="3" v-model="question_detail"></textarea>
+                <div class="invalid-feedback" :style="v_question_detail">
+                    請詳細輸入您的問題，以便我們能有效回覆您的問題。
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" v-if="question_upload">
+            <label for="upload_file" class=" col-sm-12 col-form-label">{{ upload_text }}</label>
+            <div class="col-md-4 mb-3">
+                <input type="file" @change="fileSelected" v-if="upload_ready" class="form-control" id="upload_file"
+                       multiple>
+                <small class="form-text text-muted">
+                    ・檔案須為 JPEG、GIF、PNG、BMP 格式。<br>
+                    ・最多上傳 3 張照片。<br>
+                    ・每筆檔案最多可為 2 MB。
+                </small>
+                <div class="invalid-feedback" :style="v_question_upload">
+                    請上傳問題相關圖片。
+                </div>
+            </div>
+            <div class="col-md-8 mb-3">
+                <button type="button" v-if="del_image" @click="delImage" class="btn btn-primary bg-1da7fc btn-sm">清空重傳
+                </button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <img :src="image1" class="img-fluid pt-3"/>
+            </div>
+            <div class="col-md-4 mb-3">
+                <img :src="image2" class="img-fluid pt-3"/>
+            </div>
+            <div class="col-md-4 mb-3">
+                <img :src="image3" class="img-fluid pt-3"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-12 pt-3">
+                <button type="button" @click="submitForm" class="btn btn-primary bg-1da7fc mx-auto d-block">送出表單
+                </button>
+            </div>
         </div>
     </div>
-    <div class="form-group row" v-if="sub_question_view">
-        <label for="sub_questions" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
-            <select id="sub_questions" class="form-control" v-model="sub_selected" @change="subQuestionChange">
-                <option value="" disabled>請選擇</option>
-                <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}
-                </option>
-            </select>
-        </div>
-    </div>
-    <!--<button v-on:click="show" type="button">console.log</button>-->
-    <div class="form-group row" v-if="question_time">
-        <label for="question_time" class="col-sm-2 col-form-label">發生時間</label>
-        <div class="col-sm-10">
-            <datetime type="datetime" input-id="question_time" input-class="form-control"
-                      :format="datetime_format"></datetime>
-        </div>
-        <div class="col-sm-12 pt-2">
-            <p class="text-left">※ 請盡量填寫詳細時間，以便我們能更快確認您的問題。</p>
-        </div>
-    </div>
-    <div class="form-group row" v-if="question_phone">
-        <label for="old_phone" class=" col-sm-2 col-form-label">原手機號碼</label>
-        <div class="col-sm-4">
-            <input id="old_phone" type="text" class="form-control" placeholder="原手機號碼">
-        </div>
-        <label for="new_phone" class=" col-sm-2 col-form-label">新手機號碼</label>
-        <div class="col-sm-4">
-            <input id="new_phone" type="text" class="form-control" placeholder="新手機號碼">
-        </div>
-    </div>
-    <div class="form-group row" v-if="question_car_num">
-        <label for="car_num" class="col-sm-2 col-form-label ">車號</label>
-        <div class="col-sm-2">
-            <input id="car_num" type="text" class="form-control" placeholder="車號">
-        </div>
-        <label for="parking_city" class="col-sm-2 col-form-label text-center">開單縣市</label>
-        <div class="col-sm-2">
-            <select id="parking_city" class="form-control">
-                <option v-for="parking_city in parking_cities" :value="parking_city">{{ parking_city }}</option>
-            </select>
-        </div>
-        <label for="parking_num" class="col-sm-2 col-form-label text-center">停車單號</label>
-        <div class="col-sm-2">
-            <input id="parking_num" type="text" class="form-control" placeholder="停車單單號">
-        </div>
-    </div>
-    <div class="form-group row" v-if="question_receiver">
-        <label for="receiver" class="col-sm-2 col-form-label">繳費對象</label>
-        <div class="col-sm-10">
-            <input id="receiver" type="text" class="form-control" placeholder="繳費對象">
-        </div>
-    </div>
-    <div class="form-group row" v-if="question_point">
-        <div class="col-sm">
-            <p class="text-left">※ 刷卡交易獲得之P幣，依廠商請款時間不同，將於請款後2-3天工作天入帳。請先確認交易是否已完成請款。</p>
-        </div>
-    </div>
-    <div class="form-group row" v-if="question_desc">
-        <div class="col-sm-12">
-            <p class="text-left">{{ reminder_text }}</p>
-        </div>
-        <label for="question_detail" class=" col-sm-2 col-form-label">問題描述</label>
-        <div class="col-sm-10">
-            <textarea class="form-control" id="question_detail" rows="3"></textarea>
-        </div>
-    </div>
-    <div class="form-group row" v-if="question_upload">
-        <label for="upload_file" class=" col-sm-12 col-form-label" >{{ upload_text }}</label>
-        <div class="col-sm-12 pt-3">
-            <input type="file" @change="fileSelected" class="form-control-file" id="upload_file" multiple>
-        </div>
-        <div class="col-sm-12 pt-3"></div>
-        <div class="col-sm-4">
-            <img :src="image1" class="img-fluid"/>
-        </div>
-        <div class="col-sm-4">
-            <img :src="image2" class="img-fluid"/>
-        </div>
-        <div class="col-sm-4">
-            <img :src="image3" class="img-fluid"/>
-        </div>
-    </div>
-</div>
-
+</form>
 
 </body>
 <!-- Vue.js -->
@@ -187,9 +245,44 @@
 <script src="https://cdn.jsdelivr.net/npm/vue-datetime@1.0.0-beta.8/dist/vue-datetime.min.js"></script>
 <script>
 
+    let show = {display: 'block'};
+    let hide = {display: 'none'};
+
     new Vue({
-        el: '#basic',
+        el: '#question',
         data: {
+            name: '',
+            phone: '',
+            email: '',
+            phone_brand: '',
+            phone_os: '',
+            pi_version: '',
+            main_question_value: '',
+            sub_selected: '',
+            old_phone: '',
+            new_phone: '',
+            car_num: '',
+            parking_city: '',
+            parking_num: '',
+            receiver: '',
+            question_detail: '',
+            v_name: hide,
+            v_phone: hide,
+            v_email: hide,
+            v_phone_brand: hide,
+            v_phone_os: hide,
+            v_pi_version: hide,
+            v_main_question_value: hide,
+            v_sub_selected: hide,
+            v_old_phone: hide,
+            v_new_phone: hide,
+            v_car_num: hide,
+            v_parking_city: hide,
+            v_parking_num: hide,
+            v_receiver: hide,
+            v_question_detail: hide,
+            v_question_time: hide,
+            v_question_upload: hide,
             phone_brands: [
                 'iPhone',
                 'Sony',
@@ -202,14 +295,6 @@
                 '華為',
                 '其他'
             ],
-        },
-    });
-
-    new Vue({
-        el: '#question',
-        data: {
-            sub_selected: '',
-            main_question_value: '',
             main_questions: [
                 {text: 'APP 操作問題', value: 'AP'},
                 {text: '變更帳戶資料', value: 'CH'},
@@ -224,14 +309,16 @@
                 {text: '行銷活動諮詢', value: 'MA'},
                 {text: '給 Pi 拍錢包的建議', value: 'SU'},
             ],
-            upload_text : '請附上截圖照片 ( 最多 3 張，大小限制 2 MB )',
-            reminder_text : '',
+            upload_ready: true,
+            upload_text: '請附上截圖照片',
+            reminder_text: '',
             datetime_format: {
                 year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit", hour12: false
             },
             image1: '',
             image2: '',
             image3: '',
+            del_image: false,
             parking_cities: [
                 '基隆市',
                 '臺北市',
@@ -249,20 +336,16 @@
             question_phone: false,
             question_car_num: false,
             question_receiver: false,
-            question_point: false,
             question_desc: false,
             question_upload: false,
 
         },
         methods: {
-            show() {
-                console.log(document.getElementById('question_time').value)
-            },
             subQuestionChange() {
                 let question_number = this.main_question_value + this.sub_selected;
 
                 let question_time_list = [
-                    'AP17', 'BI31', 'BI32', 'BI33',
+                    'AP14', 'BI31', 'BI32', 'BI33',
                     'TR41', 'TR42', 'TR43', 'TR44', 'TR45', 'TR46'
                 ];
                 let question_phone_list = [
@@ -299,84 +382,174 @@
                     'ME91', 'ME92',
                 ];
 
-                if (question_time_list.indexOf(question_number) !== -1) {
-                    this.question_time = true;
+                this.question_time = question_time_list.indexOf(question_number) !== -1;
+                this.question_phone = question_phone_list.indexOf(question_number) !== -1;
+                this.question_car_num = question_car_num_list.indexOf(question_number) !== -1;
+                this.question_receiver = question_receiver_list.indexOf(question_number) !== -1;
+                this.question_desc = question_desc_list.indexOf(question_number) !== -1;
+                this.question_upload = question_upload_list.indexOf(question_number) !== -1;
+
+                this.reminder_text = (question_number === 'PC51') ? '※刷卡交易獲得之P幣，依廠商請款時間不同，將於請款後2-3天工作天入帳。請先確認交易是否已完成請款。' : '';
+
+                if (question_number === 'CH21') {
+                    this.upload_text = '請上傳身分證正面照片';
+                } else if (question_number === 'CH22') {
+                    this.upload_text = '請上傳身分證正面照片、帳戶手機號碼電信費帳單照片 ( ※ 請提供註冊的手機號碼電信帳單，以作為門號持有人之依據。 )';
                 } else {
-                    this.question_time = false;
-                }
-
-                if (question_phone_list.indexOf(question_number) !== -1) {
-                    this.question_phone = true;
-                } else {
-                    this.question_phone = false;
-                }
-
-                if (question_car_num_list.indexOf(question_number) !== -1) {
-                    this.question_car_num = true;
-                } else {
-                    this.question_car_num = false;
-                }
-
-                if (question_receiver_list.indexOf(question_number) !== -1) {
-                    this.question_receiver = true;
-                } else {
-                    this.question_receiver = false;
-                }
-
-                if (question_desc_list.indexOf(question_number) !== -1) {
-
-                    if(question_number === 'PC51') {
-                        this.reminder_text = '※刷卡交易獲得之P幣，依廠商請款時間不同，將於請款後2-3天工作天入帳。請先確認交易是否已完成請款。';
-                    } else {
-                        this.reminder_text = '';
-                    }
-
-                    this.question_desc = true;
-                } else {
-                    this.question_desc = false;
-                }
-
-                if (question_upload_list.indexOf(question_number) !== -1) {
-
-                    if(question_number === 'CH21') {
-                        this.upload_text = '請上傳身分證正面照片';
-                    } else if(question_number === 'CH22') {
-                        this.upload_text = '請上傳身分證正面照片、帳戶手機號碼電信費帳單照片 ( ※ 請提供註冊的手機號碼電信帳單，以作為門號持有人之依據。 )';
-                    }
-
-                    this.question_upload = true;
-
-                } else {
-
-                    this.upload_text = '請附上截圖照片 ( 最多 3 張，大小限制 2 MB )';
-                    this.question_upload = false;
+                    this.upload_text = '請附上截圖照片';
                 }
             },
             fileSelected(event) {
-                let images = this;
+                let vm = this;
+                // 偵測到上傳時先初始化欄位
+                vm.image1 = '';
+                vm.image2 = '';
+                vm.image3 = '';
+                vm.del_image = false;
+                // 初始化結束
                 const files = event.target.files;
                 for (let i = 0; i < files.length; i++) {
                     let file = files[i];
                     const reader = new FileReader();
                     reader.addEventListener('load', function (event) {
-                        console.log(event.target.result);
                         switch (i) {
                             case 0:
-                                images.image1 = event.target.result;
+                                vm.image1 = event.target.result;
                                 break;
                             case 1:
-                                images.image2 = event.target.result;
+                                vm.image2 = event.target.result;
                                 break;
                             case 2:
-                                images.image3 = event.target.result;
+                                vm.image3 = event.target.result;
                                 break;
                             default:
                                 break;
                         }
+                        vm.del_image = true;
                     });
                     reader.readAsDataURL(file);
                 }
             },
+            delImage() {
+                this.del_image = false;
+                this.image1 = '';
+                this.image2 = '';
+                this.image3 = '';
+                this.upload_ready = false;
+                this.$nextTick(() => {
+                    this.upload_ready = true;
+                })
+            },
+            submitForm() {
+                this.v_name = this.name === '' ? show : hide;
+                this.v_phone = (this.phone === '' || this.checkFormat('phone', this.phone)) ? show : hide;
+                this.v_email = (this.email === '' || this.checkFormat('email', this.email)) ? show : hide;
+                this.v_phone_brand = (this.phone_brand === '') ? show : hide;
+                this.v_phone_os = (this.phone_os === '' || this.checkFormat('phone_os', this.phone_os)) ? show : hide;
+                this.v_pi_version = (this.pi_version === '' || this.checkFormat('pi_version', this.pi_version)) ? show : hide;
+                this.v_main_question_value = (this.main_question_value === '') ? show : hide;
+                this.v_sub_selected = (this.sub_selected === '') ? show : hide;
+                this.v_old_phone = (this.old_phone === '' || this.checkFormat('phone', this.old_phone)) ? show : hide;
+                this.v_new_phone = (this.new_phone === '' || this.checkFormat('phone', this.new_phone)) ? show : hide;
+                this.v_car_num = (this.car_num === '' || this.car_num.indexOf('-') === -1) ? show : hide;
+                this.v_parking_city = (this.parking_city === '') ? show : hide;
+                this.v_parking_num = (this.parking_num === '') ? show : hide;
+                this.v_question_time = (document.getElementById('question_time') !== null && document.getElementById('question_time').value === '') ? show : hide;
+                this.v_receiver = (this.receiver === '') ? show : hide;
+                this.v_question_detail = (this.question_detail === '') ? show : hide;
+                this.v_question_upload = (this.image1 === '' && this.image2 === '' && this.image3 === '') ? show : hide;
+
+                if (
+                    this.name === '' ||
+                    this.phone === '' ||
+                    this.checkFormat('phone', this.phone) ||
+                    this.email === '' ||
+                    this.checkFormat('email', this.email) ||
+                    this.phone_brand === '' ||
+                    this.phone_os === '' ||
+                    this.checkFormat('phone_os', this.phone_os) ||
+                    this.pi_version === '' ||
+                    this.checkFormat('pi_version', this.pi_version) ||
+                    this.main_question_value === '' ||
+                    this.sub_selected === ''
+                ) {
+                    return false;
+                }
+
+                if (
+                    this.question_phone === true &&
+                    (
+                        this.old_phone === '' ||
+                        this.checkFormat('phone', this.old_phone) ||
+                        this.new_phone === '' ||
+                        this.checkFormat('phone', this.new_phone)
+                    )
+                ) {
+                    return false;
+                }
+
+                if (
+                    this.question_car_num === true &&
+                    (
+                        this.car_num === '' ||
+                        this.car_num.indexOf('-') === -1 ||
+                        this.parking_city === '' ||
+                        this.parking_num === ''
+                    )
+                ) {
+                    return false;
+                }
+
+                if (
+                    this.question_receiver === true &&
+                    this.receiver === ''
+                ) {
+                    return false;
+                }
+
+                if (
+                    this.question_desc === true &&
+                    this.question_detail === ''
+                ) {
+                    return false;
+                }
+
+                if (
+                    this.question_upload === true &&
+                    this.image1 === '' &&
+                    this.image2 === '' &&
+                    this.image3 === ''
+                ) {
+                    return false;
+                }
+
+                // 幹 這段到底怎麼用 Vue 寫，逼不得已先抓 DOM 來做
+                if (
+                    this.question_time === true &&
+                    document.getElementById('question_time') !== null &&
+                    document.getElementById('question_time').value === ''
+                ) {
+                    return false;
+                }
+
+                console.log('yeah');
+            },
+            checkFormat(type, value) {
+
+                let regex;
+
+                if (type === 'phone') {
+                    regex = /^09[0-9]{8}$/;
+                } else if (type === 'email') {
+                    regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                } else if (type === 'phone_os' || type === 'pi_version') {
+                    regex = /^[a-zA-Z0-9]+$/;
+                } else {
+                    return false;
+                }
+
+                return !regex.test(value);
+            }
         },
         computed: {
             sub_question_view() {
@@ -384,8 +557,14 @@
             },
             sub_questions() {
 
-                // 主 select 切換時 副 select 回到初始值
+                // 主 select 切換時 下方全部初始化
                 this.sub_selected = '';
+                this.question_time = false;
+                this.question_phone = false;
+                this.question_car_num = false;
+                this.question_receiver = false;
+                this.question_desc = false;
+                this.question_upload = false;
 
                 switch (this.main_question_value) {
                     case 'AP' :
@@ -483,6 +662,7 @@
     });
 
 </script>
+
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
