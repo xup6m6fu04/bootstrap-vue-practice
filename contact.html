@@ -42,27 +42,27 @@
 </div>
 
 <div class="dropdown-divider"></div>
-<form class="needs-validation" novalidate>
-    <div id="question" class="container pt-3">
 
+    <div id="question" class="container pt-3">
+        <form class="needs-validation" ref="form" novalidate>
         <div class="form-group row">
             <div class="col-md-4 mb-3">
                 <label for="name">姓名</label>
-                <input id="name" type="text" class="form-control" placeholder="姓名" v-model="name">
+                <input id="name" type="text" class="form-control" :class="name_is_invalid" placeholder="姓名" v-model="name">
                 <div class="invalid-feedback" :style="v_name">
                     請輸入姓名。
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="phone">手機</label>
-                <input id="phone" type="phone" class="form-control" placeholder="手機" v-model="phone">
+                <input id="phone" type="phone" class="form-control" :class="phone_is_invalid" placeholder="手機" v-model="phone">
                 <div class="invalid-feedback" :style="v_phone">
                     請正確填寫手機號碼。
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="email">電子信箱</label>
-                <input id="email" type="email" class="form-control" placeholder="電子信箱" v-model="email">
+                <input id="email" type="email" class="form-control" :class="email_is_invalid" placeholder="電子信箱" v-model="email">
                 <small class="form-text text-muted">
                     ※ 我們將寄送回覆信函至您提供的電子信箱
                 </small>
@@ -74,7 +74,7 @@
         <div class="form-group row">
             <div class="col-md-4 mb-3">
                 <label for="phone_brands">發生問題的裝置</label>
-                <select id="phone_brands" class="form-control" v-model="phone_brand">
+                <select id="phone_brands" class="form-control" :class="phone_brand_is_invalid" v-model="phone_brand">
                     <option value="" disabled selected>請選擇</option>
                     <option v-for="phone_brand in phone_brands" :value="phone_brand">{{ phone_brand }}</option>
                 </select>
@@ -84,14 +84,14 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label for="phone_os">手機作業系統</label>
-                <input id="phone_os" type="text" class="form-control" placeholder="手機作業系統" v-model="phone_os">
+                <input id="phone_os" type="text" class="form-control" :class="phone_os_is_invalid" placeholder="手機作業系統" v-model="phone_os">
                 <div class="invalid-feedback" :style="v_phone_os">
                     請輸入您的手機作業系統版本 ( 限填英數 )。
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="pi_version">Pi APP 版本</label>
-                <input id="pi_version" type="text" class="form-control" placeholder="Pi APP 版本" v-model="pi_version">
+                <input id="pi_version" type="text" class="form-control" :class="pi_version_is_invalid" placeholder="Pi APP 版本" v-model="pi_version">
                 <div class="invalid-feedback" :style="v_pi_version">
                     請輸入您的 Pi App 版本 ( 限填英數 )。
                 </div>
@@ -101,7 +101,7 @@
         <div class="form-group row">
             <div class="col-md-4 mb-3">
                 <label for="main_questions">問題類型</label>
-                <select id="main_questions" class="form-control" v-model="main_question_value">
+                <select id="main_questions" class="form-control" :class="main_question_value_is_invalid" v-model="main_question_value">
                     <option value="" disabled>請選擇</option>
                     <option v-for="main_question in main_questions" :value="main_question.value">{{ main_question.text
                         }}
@@ -113,7 +113,7 @@
             </div>
             <div class="col-md-8 mb-3" v-if="sub_question_view">
                 <label for="sub_questions">問題細節</label>
-                <select id="sub_questions" class="form-control" v-model="sub_selected" @change="subQuestionChange">
+                <select id="sub_questions" class="form-control" :class="sub_selected_is_invalid" v-model="sub_selected" @change="subQuestionChange">
                     <option value="" disabled>請選擇</option>
                     <option v-for="sub_question in sub_questions" :value="sub_question.value">{{ sub_question.text }}
                     </option>
@@ -143,14 +143,14 @@
         <div class="form-group row" v-if="question_phone">
             <div class="col-md-6 mb-3">
                 <label for="old_phone">原手機號碼</label>
-                <input id="old_phone" type="text" class="form-control" placeholder="原手機號碼" v-model="old_phone">
+                <input id="old_phone" type="text" class="form-control" :class="old_phone_is_invalid" placeholder="原手機號碼" v-model="old_phone">
                 <div class="invalid-feedback" :style="v_old_phone">
                     請輸入原註冊在 Pi App 的手機號碼。
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="new_phone">新手機號碼</label>
-                <input id="new_phone" type="text" class="form-control" placeholder="新手機號碼" v-model="new_phone">
+                <input id="new_phone" type="text" class="form-control" :class="new_phone_is_invalid" placeholder="新手機號碼" v-model="new_phone">
                 <div class="invalid-feedback" :style="v_new_phone">
                     請輸入欲變更的手機號碼。
                 </div>
@@ -159,14 +159,14 @@
         <div class="form-group row" v-if="question_car_num">
             <div class="col-md-4 mb-3">
                 <label for="car_num">車號</label>
-                <input id="car_num" type="text" class="form-control" placeholder="車號" v-model="car_num">
+                <input id="car_num" type="text" class="form-control" :class="car_num_is_invalid" placeholder="車號" v-model="car_num">
                 <div class="invalid-feedback" :style="v_car_num">
                     請填寫正確車號。
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="parking_city">開單縣市</label>
-                <select id="parking_city" class="form-control" v-model="parking_city">
+                <select id="parking_city" class="form-control" :class="parking_city_is_invalid" v-model="parking_city">
                     <option value="" disabled selected>請選擇</option>
                     <option v-for="parking_city in parking_cities" :value="parking_city">{{ parking_city }}</option>
                 </select>
@@ -176,7 +176,7 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label for="parking_num">停車單號</label>
-                <input id="parking_num" type="text" class="form-control" placeholder="停車單單號" v-model="parking_num">
+                <input id="parking_num" type="text" class="form-control" :class="parking_num_is_invalid" placeholder="停車單單號" v-model="parking_num">
                 <div class="invalid-feedback" :style="v_parking_num">
                     請填寫停車單單號。
                 </div>
@@ -185,7 +185,7 @@
         <div class="form-group row" v-if="question_receiver">
             <div class="col-md-12 mb-3">
                 <label for="receiver">繳費對象</label>
-                <input id="receiver" type="text" class="form-control" placeholder="繳費對象" v-model="receiver">
+                <input id="receiver" type="text" class="form-control" :class="receiver_is_invalid" placeholder="繳費對象" v-model="receiver">
                 <div class="invalid-feedback" :style="v_receiver">
                     請填寫繳費對象。
                 </div>
@@ -194,7 +194,7 @@
         <div class="form-group row" v-if="question_desc">
             <div class="col-md-12 mb-3">
                 <label for="question_detail">問題描述</label>
-                <textarea class="form-control" id="question_detail" rows="3" v-model="question_detail"></textarea>
+                <textarea class="form-control" id="question_detail" :class="question_detail_is_invalid" rows="3" v-model="question_detail"></textarea>
                 <div class="invalid-feedback" :style="v_question_detail">
                     請詳細輸入您的問題，以便我們能有效回覆您的問題。
                 </div>
@@ -203,7 +203,7 @@
         <div class="form-group row" v-if="question_upload">
             <label for="upload_file" class=" col-sm-12 col-form-label">{{ upload_text }}</label>
             <div class="col-md-4 mb-3">
-                <input type="file" @change="fileSelected" v-if="upload_ready" class="form-control" id="upload_file"
+                <input type="file" @change="fileSelected" v-if="upload_ready" class="form-control" :class="upload_file_is_invalid" id="upload_file"
                        multiple>
                 <small class="form-text text-muted">
                     ・檔案須為 JPEG、GIF、PNG、BMP 格式。<br>
@@ -234,15 +234,16 @@
                 </button>
             </div>
         </div>
+        </form>
     </div>
-</form>
+
 
 </body>
 <!-- Vue.js -->
 <!--<script src="https://vuejs.org/js/vue.js"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
-<script src="https://moment.github.io/luxon/global/luxon.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue-datetime@1.0.0-beta.8/dist/vue-datetime.min.js"></script>
+<script src="https://moment.github.io/luxon/global/luxon.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-datetime@1.0.0-beta.8/dist/vue-datetime.js"></script>
 <script>
 
     let show = {display: 'block'};
@@ -266,6 +267,22 @@
             parking_num: '',
             receiver: '',
             question_detail: '',
+            name_is_invalid: '',
+            phone_is_invalid: '',
+            email_is_invalid: '',
+            phone_brand_is_invalid: '',
+            phone_os_is_invalid: '',
+            pi_version_is_invalid: '',
+            main_question_value_is_invalid: '',
+            sub_selected_is_invalid: '',
+            old_phone_is_invalid: '',
+            new_phone_is_invalid: '',
+            car_num_is_invalid: '',
+            parking_city_is_invalid: '',
+            parking_num_is_invalid: '',
+            receiver_is_invalid: '',
+            question_detail_is_invalid: '',
+            upload_file_is_invalid: '',
             v_name: hide,
             v_phone: hide,
             v_email: hide,
@@ -441,98 +458,171 @@
                 })
             },
             submitForm() {
-                this.v_name = this.name === '' ? show : hide;
-                this.v_phone = (this.phone === '' || this.checkFormat('phone', this.phone)) ? show : hide;
-                this.v_email = (this.email === '' || this.checkFormat('email', this.email)) ? show : hide;
-                this.v_phone_brand = (this.phone_brand === '') ? show : hide;
-                this.v_phone_os = (this.phone_os === '' || this.checkFormat('phone_os', this.phone_os)) ? show : hide;
-                this.v_pi_version = (this.pi_version === '' || this.checkFormat('pi_version', this.pi_version)) ? show : hide;
-                this.v_main_question_value = (this.main_question_value === '') ? show : hide;
-                this.v_sub_selected = (this.sub_selected === '') ? show : hide;
-                this.v_old_phone = (this.old_phone === '' || this.checkFormat('phone', this.old_phone)) ? show : hide;
-                this.v_new_phone = (this.new_phone === '' || this.checkFormat('phone', this.new_phone)) ? show : hide;
-                this.v_car_num = (this.car_num === '' || this.car_num.indexOf('-') === -1) ? show : hide;
-                this.v_parking_city = (this.parking_city === '') ? show : hide;
-                this.v_parking_num = (this.parking_num === '') ? show : hide;
-                this.v_question_time = (document.getElementById('question_time') !== null && document.getElementById('question_time').value === '') ? show : hide;
-                this.v_receiver = (this.receiver === '') ? show : hide;
-                this.v_question_detail = (this.question_detail === '') ? show : hide;
-                this.v_question_upload = (this.image1 === '' && this.image2 === '' && this.image3 === '') ? show : hide;
 
-                if (
-                    this.name === '' ||
-                    this.phone === '' ||
-                    this.checkFormat('phone', this.phone) ||
-                    this.email === '' ||
-                    this.checkFormat('email', this.email) ||
-                    this.phone_brand === '' ||
-                    this.phone_os === '' ||
-                    this.checkFormat('phone_os', this.phone_os) ||
-                    this.pi_version === '' ||
-                    this.checkFormat('pi_version', this.pi_version) ||
-                    this.main_question_value === '' ||
-                    this.sub_selected === ''
-                ) {
-                    return false;
+                let check_status = true;
+
+                if (this.name === '') {
+                    this.v_name = show;
+                    this.name_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_name = hide;
+                    this.name_is_invalid = '';
+                }
+                if (this.phone === '' || this.checkFormat('phone', this.phone)) {
+                    this.v_phone = show;
+                    this.phone_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_phone = hide;
+                    this.phone_is_invalid = '';
+                }
+                if (this.email === '' || this.checkFormat('email', this.email)) {
+                    this.v_email = show;
+                    this.email_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_email = hide;
+                    this.email_is_invalid = '';
+                }
+                if (this.phone_brand === '') {
+                    this.v_phone_brand = show;
+                    this.phone_brand_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_phone_brand = hide;
+                    this.phone_brand_is_invalid = '';
+                }
+                if (this.phone_os === '' || this.checkFormat('phone_os', this.phone_os)) {
+                    this.v_phone_os = show;
+                    this.phone_os_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_phone_os = hide;
+                    this.phone_os_is_invalid = '';
+                }
+                if (this.pi_version === '' || this.checkFormat('pi_version', this.pi_version)) {
+                    this.v_pi_version = show;
+                    this.pi_version_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_pi_version = hide;
+                    this.pi_version_is_invalid = '';
+                }
+                if (this.main_question_value === '') {
+                    this.v_main_question_value = show;
+                    this.main_question_value_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_main_question_value = hide;
+                    this.main_question_value_is_invalid = '';
+                }
+                if (this.sub_selected === '') {
+                    this.v_sub_selected = show;
+                    this.sub_selected_is_invalid = 'is-invalid';
+                    check_status = false;
+                } else {
+                    this.v_sub_selected = hide;
+                    this.sub_selected_is_invalid = '';
                 }
 
-                if (
-                    this.question_phone === true &&
-                    (
-                        this.old_phone === '' ||
-                        this.checkFormat('phone', this.old_phone) ||
-                        this.new_phone === '' ||
-                        this.checkFormat('phone', this.new_phone)
-                    )
-                ) {
-                    return false;
+                if (this.question_phone === true ) {
+                    if (this.old_phone === '' || this.checkFormat('phone', this.old_phone)) {
+                        this.v_old_phone = show;
+                        this.old_phone_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_old_phone = hide;
+                        this.old_phone_is_invalid = '';
+                    }
+                    if (this.new_phone === '' || this.checkFormat('phone', this.new_phone)) {
+                        this.v_new_phone = show;
+                        this.new_phone_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_new_phone = hide;
+                        this.new_phone_is_invalid = '';
+                    }
                 }
 
-                if (
-                    this.question_car_num === true &&
-                    (
-                        this.car_num === '' ||
-                        this.car_num.indexOf('-') === -1 ||
-                        this.parking_city === '' ||
-                        this.parking_num === ''
-                    )
-                ) {
-                    return false;
+                if (this.question_car_num === true) {
+                    if (this.car_num === '' || this.car_num.indexOf('-') === -1) {
+                        this.v_car_num = show;
+                        this.car_num_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_car_num = hide;
+                        this.car_num_is_invalid = '';
+                    }
+                    if (this.parking_city === '') {
+                        this.v_parking_city = show;
+                        this.parking_city_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_parking_city = hide;
+                        this.parking_city_is_invalid = '';
+                    }
+                    if (this.parking_num === '') {
+                        this.v_parking_num = show;
+                        this.parking_num_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_parking_num = hide;
+                        this.parking_num_is_invalid = '';
+                    }
                 }
 
-                if (
-                    this.question_receiver === true &&
-                    this.receiver === ''
-                ) {
-                    return false;
+                if (this.question_time === true) {
+                    if (document.getElementById('question_time') !== null && document.getElementById('question_time').value === '') {
+                        document.getElementById('question_time').classList.add('is-invalid');
+                        this.v_question_time = show;
+                        check_status = false;
+                    } else {
+                        document.getElementById('question_time').classList.remove('is-invalid');
+                        this.v_question_time = hide;
+                    }
                 }
 
-                if (
-                    this.question_desc === true &&
-                    this.question_detail === ''
-                ) {
-                    return false;
+                if (this.question_receiver === true) {
+                    if (this.receiver === '') {
+                        this.v_receiver = show;
+                        this.receiver_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_receiver = hide;
+                        this.receiver_is_invalid = '';
+                    }
                 }
 
-                if (
-                    this.question_upload === true &&
-                    this.image1 === '' &&
-                    this.image2 === '' &&
-                    this.image3 === ''
-                ) {
-                    return false;
+                if (this.question_desc === true) {
+                    if (this.question_detail === '') {
+                        this.v_question_detail = show;
+                        this.question_detail_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_question_detail = hide;
+                        this.question_detail_is_invalid = '';
+                    }
                 }
 
-                // 幹 這段到底怎麼用 Vue 寫，逼不得已先抓 DOM 來做
-                if (
-                    this.question_time === true &&
-                    document.getElementById('question_time') !== null &&
-                    document.getElementById('question_time').value === ''
-                ) {
-                    return false;
+                if (this.question_upload === true) {
+                    if (this.image1 === '' && this.image2 === '' && this.image3 === '') {
+                        this.v_question_upload = show;
+                        this.upload_file_is_invalid = 'is-invalid';
+                        check_status = false;
+                    } else {
+                        this.v_question_upload = hide;
+                        this.upload_file_is_invalid = '';
+                    }
                 }
 
-                console.log('yeah');
+                if (check_status) {
+                    console.log('yeah');
+                } else {
+                    console.log('fuck');
+                }
+
+
             },
             checkFormat(type, value) {
 
